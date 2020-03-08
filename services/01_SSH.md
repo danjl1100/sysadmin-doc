@@ -1,7 +1,9 @@
 # SSH
 
+
 ## Prerequisites
 * [Debian installed](../os/01_Debian_Headless.md) with `openssh-server` (or equivalent) running
+
 
 ## Test Connection
 1. Print the server's IP address and ECDSA fingerprint.
@@ -16,6 +18,7 @@
   ssh -o visualhostkey=yes -o FingerprintHash=sha256 user@192.168.1.XXX
   ```
 Source: adapted from [superuser answer](https://superuser.com/a/1442341)
+
 
 ## Public Key Authentication
 Allowing only public key authentication makes the SSH server [more secure](https://security.stackexchange.com/a/3898).
