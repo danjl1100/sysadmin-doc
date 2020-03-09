@@ -35,6 +35,14 @@ Boot into the non-graphical installer. Choose default (sane) options, noting the
   ```
 
 
+## General Tools
+
+1. Install these handy tools
+```bash
+sudo apt install htop screen
+```
+
+
 ## Fixing Issues
 
 See headings below for how to address common issues.
