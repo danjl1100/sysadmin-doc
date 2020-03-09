@@ -69,6 +69,7 @@ sudo parted /dev/disk/by-id/TARGET_DEVICE
 # Double-check everything looks good
 (parted) quit
 ```
+1. Repeat for all data drives.
 
 1. Create the pool using the `ashift` value found in previous subsection
 ```bash
