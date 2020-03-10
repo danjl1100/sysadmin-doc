@@ -89,6 +89,42 @@ sudo zfs set atime=off POOL_NAME
 
 
 ## Create Datasets
+
+1. Create shared datasets.
+  ```bash
+  sudo zfs create server/pub
+  sudo zfs create server/pub/movie
+  sudo zfs create server/pub/music
+  sudo zfs create server/pub/picture
+  sudo zfs create server/pub/tv
+  ```
+  * Optionally, disallow creating uncategorized files: ```sudo chmod 550 /server/pub```
+
+1. Create datasets for each user with sane parameters.
+  ```bash
+  for user in $USER `cat users.txt`; do
+    #TODO remove echos
+    echo sudo zfs create server/$user
+    echo sudo zfs create server/$user/safe
+    echo sudo zfs set reservation=100G server/$user
+    echo sudo zfs set refquota=100G server/$user/safe
+    echo sudo zfs set quota=500G server/$user/safe
+  done
+  ```
+  * Reserve 100G minimum for each user.
+  * Limit `safe` folder to 100G (500G including snapshots).
+
+1. Link to dataset in user homes, and set permissions.
+  ```bash
+  for user in $USER `cat users.txt`; do
+    sudo ln -s /server/$user /home/$user/$user
+    sudo ln -s /server/pub /home/$user/pub
+    sudo chown -R $user:$user /server/$user
+    sudo chmod -R a-w /server/$user
+  done
+  sudo chown -R nobody:publisher /server/pub
+  sudo chmod -R g+ws /server/pub
+  ```
 ```
 #TODO
 ```

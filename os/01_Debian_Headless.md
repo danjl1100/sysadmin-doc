@@ -43,14 +43,24 @@ Boot into the non-graphical installer. Choose default (sane) options, noting the
   #   gateway 192.168.1.1
   sudo service networking restart
   ```
-1. Add users to publisher group, with password login disabled (for now).
+1. Define the additional users you want to create.   This will be used in later steps.
   ```bash
   echo "user1 user2 user3" > users.txt
+  ```
+1. Create users with password login disabled (for now).
+  ```bash
   for user in `cat users.txt`; do
     sudo adduser --disabled-password --gecos "" $user
   done
   ```
   * Configure passwords later with `sudo passwd USER`
+1. Add users to publisher group.
+  ```bash
+  sudo groupadd publisher
+  for user in $USER `cat users.txt`; do
+    sudo usermod -a -G publisher $user
+  done
+  ```
 
 
 ## General Tools
