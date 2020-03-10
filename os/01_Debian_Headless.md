@@ -25,7 +25,7 @@ Boot into the non-graphical installer. Choose default (sane) options, noting the
 1. Check only `SSH server` and `standard systems utilities`.
 
 
-## Users Setup
+## Initial Setup
 
 1. Verify your login works.
 1. For console-aesthetics reasons, force color prompt:
@@ -33,6 +33,24 @@ Boot into the non-graphical installer. Choose default (sane) options, noting the
   sed -i 's/#force_color/force_color/g' ~/.bashrc
   source ~/.bashrc
   ```
+1. Configure a static IP address (optional, but useful)
+  ```bash
+  sudo nano /etc/network/interfaces
+  # CHANGE TO:
+  #   auto INTERFACE_NAME
+  #   iface INTERFACE_NAME inet static
+  #   address 192.168.1.XXX
+  #   gateway 192.168.1.1
+  sudo service networking restart
+  ```
+1. Add users to publisher group, with password login disabled (for now).
+  ```bash
+  echo "user1 user2 user3" > users.txt
+  for user in `cat users.txt`; do
+    sudo adduser --disabled-password --gecos "" $user
+  done
+  ```
+  * Configure passwords later with `sudo passwd USER`
 
 
 ## General Tools
