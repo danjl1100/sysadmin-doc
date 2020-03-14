@@ -3,6 +3,7 @@
 ## Prerequisites
 
 * [Debian 10 installed](../os/01_Debian_Headless.md)
+* [ZFS storage](../storage/01_ZFS.md) is required for ["Restore Previous Versions" feature](#zfs-integration)
 
 
 ## Install Samba
@@ -57,7 +58,10 @@ sudo apt-get install samba
         sudo smbpasswd -a ${user}
     done
     ```
-1. Add zfs-auto-snapshot hook in _Restore Previous Versions_ for windows clients.
+1. Restart Samba: `sudo service smbd restart`
+
+## ZFS Integration
+1. Add `zfs-auto-snapshot` hook for _Restore Previous Versions_ feature on windows clients.
     ```bash
     echo "
     ;# allow ZFS snapshots to show up in 'Restore Previous Versions'
