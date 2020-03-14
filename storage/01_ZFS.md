@@ -15,14 +15,14 @@ For Debian 10 (Buster), ZFS packages are included in the contrib repo.
     ```
 1. Update, install kernel headers and dependencies.
     ```bash
-    sudo apt update
-    sudo apt install dpkg-dev linux-headers-$(uname -r) linux-image-amd64
+    sudo apt-get update
+    sudo apt-get install dpkg-dev linux-headers-$(uname -r) linux-image-amd64
     ```
 1. Install the zfs packages. May take a few minutes.
     ```bash
-    sudo apt install zfs-dkms
+    sudo apt-get install zfs-dkms
     sudo modprobe zfs
-    sudo apt install zfsutils-linux
+    sudo apt-get install zfsutils-linux
     ```
 
 Source: [zfsonlinux instructions](https://github.com/zfsonlinux/zfs/wiki/Debian)
@@ -74,7 +74,7 @@ __NOTE__: Additional vdevs added to the pool can have their own `ashift` value.
 1. Repeat for all data drives.
 
 1. Create the pool using the `ashift` value found in previous subsection.  
-__NOTE:__ For simplicity, use a pool name `${HOSTNAME}`.
+__NOTE:__ For simplicity, use pool name "`${HOSTNAME}`".
     ```bash
     sudo zpool create ${HOSTNAME} -o ashift=12 \
     mirror /dev/disk/by-id/.._1 /dev/disk/by-id/.._1
@@ -96,11 +96,11 @@ __NOTE:__ For simplicity, use a pool name `${HOSTNAME}`.
 
 1. Create shared datasets.
     ```bash
+    echo "movie music picture tv" > pub_categories.txt
     sudo zfs create ${HOSTNAME}/pub
-    sudo zfs create ${HOSTNAME}/pub/movie
-    sudo zfs create ${HOSTNAME}/pub/music
-    sudo zfs create ${HOSTNAME}/pub/picture
-    sudo zfs create ${HOSTNAME}/pub/tv
+    for category in `cat pub_categories.txt`; do
+        sudo zfs create ${HOSTNAME}/pub/${category}
+    done
     ```
     * Optionally, disallow creating uncategorized files: ```sudo chmod 550 /${HOSTNAME}/pub```
 
@@ -128,6 +128,9 @@ __NOTE:__ For simplicity, use a pool name `${HOSTNAME}`.
     done
     sudo chown -R nobody:publisher /${HOSTNAME}/pub
     sudo chmod -R g+ws /${HOSTNAME}/pub
+    for category in `cat pub_categories.txt`; do
+        sudo chown nobody:publisher /${HOSTNAME}/pub/${category}/.zfs{,/snapshot}
+    done
     ```
 
 
@@ -144,8 +147,7 @@ __NOTE:__ For simplicity, use a pool name `${HOSTNAME}`.
 
 1. Configure the crontab entries as desired
     ```bash
-    for f in /etc/cron.*/zfs-auto-snapshot
-    do
+    for f in /etc/cron.*/zfs-auto-snapshot; do
         echo -e "===========================\n$f\n==========================="
         cat $f
     done
@@ -170,9 +172,8 @@ __NOTE:__ For simplicity, use a pool name `${HOSTNAME}`.
 
 
 ## Next Steps
-```
-#TODO
-```
+
+* Setup [Samba access](../services/02_Samba.md)
 
 
 [Homepage](../README.md)

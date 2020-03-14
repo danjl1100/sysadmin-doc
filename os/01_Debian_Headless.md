@@ -67,7 +67,7 @@ Boot into the non-graphical installer. Choose default (sane) options, noting the
 
 1. Install these handy tools
     ```bash
-    sudo apt install htop screen smartmontools parted
+    sudo apt-get install htop screen smartmontools parted
     ```
 
 
