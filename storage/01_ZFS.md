@@ -6,7 +6,7 @@
 
 
 ## Install ZFS-on-Linux
-For Debian 10 (Buster), ZFS packages are included in the contrib repo.
+For Debian 10 (Buster), ZFS packages are [included in the contrib repo](https://wiki.debian.org/ZFS#Status).
 
 1. Add Debian contrib repository to the apt sources.
     ```bash
@@ -66,6 +66,7 @@ __NOTE__: Additional vdevs added to the pool can have their own `ashift` value.
     # Verify this is the CORRECT DRIVE!!!
     (parted) mklabel gpt
     (parted) unit GB
+    # this example: 4001 GiB drive, will leave 2 GiB free.
     (parted) mkpart primary 0 3999
     (parted) print free
     # Figure how much free space is left/available
@@ -96,7 +97,7 @@ __NOTE:__ For simplicity, use pool name "`${HOSTNAME}`".
     ```
 
 
-## Create Datasets
+## Create ZFS Datasets
 
 1. Create shared datasets.
     ```bash
@@ -111,12 +112,11 @@ __NOTE:__ For simplicity, use pool name "`${HOSTNAME}`".
 1. Create datasets for each user with sane parameters.
     ```bash
     for user in $USER `cat users.txt`; do
-        #TODO remove echos
-        echo sudo zfs create ${HOSTNAME}/${user}
-        echo sudo zfs create ${HOSTNAME}/${user}/safe
-        echo sudo zfs set reservation=100G ${HOSTNAME}/${user}
-        echo sudo zfs set refquota=100G ${HOSTNAME}/${user}/safe
-        echo sudo zfs set quota=500G ${HOSTNAME}/${user}/safe
+        sudo zfs create ${HOSTNAME}/${user}
+        sudo zfs create ${HOSTNAME}/${user}/safe
+        sudo zfs set reservation=100G ${HOSTNAME}/${user}
+        sudo zfs set refquota=100G ${HOSTNAME}/${user}/safe
+        sudo zfs set quota=500G ${HOSTNAME}/${user}/safe
     done
     ```
     * Reserve 100G minimum for each user.
@@ -125,14 +125,17 @@ __NOTE:__ For simplicity, use pool name "`${HOSTNAME}`".
 1. Link to dataset in user homes, and set permissions.
     ```bash
     for user in $USER `cat users.txt`; do
+        # link to USER and PUB
         sudo ln -s /${HOSTNAME}/${user} /home/${user}/${user}
         sudo ln -s /${HOSTNAME}/pub /home/${user}/pub
         sudo chown -R ${user}:${user} /${HOSTNAME}/${user}
         sudo chmod -R a-w /${HOSTNAME}/${user}
     done
+    # sticky bit to make all PUB files owned by `publisher`
     sudo chown -R nobody:publisher /${HOSTNAME}/pub
     sudo chmod -R g+ws /${HOSTNAME}/pub
     for category in `cat pub_categories.txt`; do
+        # reveal special directory: .zfs/snapshot
         sudo chown nobody:publisher /${HOSTNAME}/pub/${category}/.zfs{,/snapshot}
     done
     ```
