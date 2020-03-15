@@ -50,7 +50,7 @@ Boot into the non-graphical installer. Choose default (sane) options, noting the
 1. Create users with password login disabled (for now).
     ```bash
     for user in `cat users.txt`; do
-    sudo adduser --disabled-password --gecos "" $user
+        sudo adduser --disabled-password --gecos "" $user
     done
     ```
     * Configure passwords later with `sudo passwd USER`
@@ -61,13 +61,20 @@ Boot into the non-graphical installer. Choose default (sane) options, noting the
         sudo usermod -a -G publisher $user
     done
     ```
+1. Add desired administrators users to `sudo` group.
+    ```bash
+    echo "user1 user2" > admins.txt
+    for admin in `cat admins.txt`; do
+        sudo adduser ${admin} sudo
+    done
+    ```
 
 
 ## General Tools
 
 1. Install these handy tools
     ```bash
-    sudo apt-get install htop screen smartmontools parted
+    sudo apt-get install htop screen smartmontools parted rsync
     ```
 
 
