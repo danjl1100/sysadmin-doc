@@ -151,10 +151,10 @@ __NOTE:__ For simplicity, use pool name "`${HOSTNAME}`".
     wget https://github.com/zfsonlinux/zfs-auto-snapshot/archive/upstream/1.2.4.tar.gz
     tar -xzf 1.2.4.tar.gz
     cd zfs-auto-snapshot-upstream-1.2.4
-    make install
+    sudo make install
     ```
 
-1. Configure the crontab entries as desired
+1. Configure the anacron entries as desired
     ```bash
     for f in /etc/cron.*/zfs-auto-snapshot; do
         echo -e "===========================\n$f\n==========================="

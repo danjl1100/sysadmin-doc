@@ -77,6 +77,53 @@ Boot into the non-graphical installer. Choose default (sane) options, noting the
     sudo apt-get install htop screen smartmontools parted rsync
     ```
 
+### Postfix Email
+Route `root` emails to a gmail account. Source: [easyengine.io](https://easyengine.io/tutorials/linux/ubuntu-postfix-gmail-smtp)
+
+1. Install packages
+    ```bash
+    sudo apt-get install postfix mailutils libsasl2-2 ca-certificates libsasl2-modules
+    ```
+    * Choose `Internet Site`, and keep the default entry for your hostname during the installation.
+1. Edit postfix config `sudo nano /etc/postfix/main.cf` to add the following:
+    ```
+    relayhost = [smtp.gmail.com]:587
+    smtp_sasl_auth_enable = yes
+    smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
+    smtp_sasl_security_options = noanonymous
+    smtp_tls_CAfile = /etc/postfix/cacert.pem
+    smtp_use_tls = yes
+    ```
+1. Create smtp credentials file.
+    ```bash
+    sudo nano /etc/postfix/sasl_passwd
+    ```
+    1. Use the following template:
+        ```
+        [smtp.gmail.com]:587    USERNAME@gmail.com:PASSWORD
+        ```
+    1. Restrict permissions, add to postmap.
+        ```bash
+        sudo chmod 400 /etc/postfix/sasl_passwd
+        sudo postmap /etc/postfix/sasl_passwd
+        ```
+1. Fix errors with certificate validation.
+    ```bash
+    cat /etc/ssl/certs/thawte_Primary_Root_CA.pem | sudo tee -a /etc/postfix/cacert.pem
+    sudo service postfix reload
+    ```
+1. Set alias for routing root mail to a specific user.
+    ```bash
+    echo "
+    root: user1
+    user1: you@example.com
+    " | sudo tee -a /etc/aliases
+    ```
+    * Source: [brismuth.com](https://brismuth.com/scheduling-automated-zfs-scrubs-9b2b452e08a4)
+1. Finally, test the configuration
+    ```bash
+    echo "Test mail from postfix, sent `date`" | mail -s "Test Postfix" you@example.com
+    ```
 
 ## Fixing Issues
 
