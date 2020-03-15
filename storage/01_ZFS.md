@@ -126,10 +126,12 @@ __NOTE:__ For simplicity, use pool name "`${HOSTNAME}`".
     ```bash
     for user in $USER `cat users.txt`; do
         # link to USER and PUBLIC
-        sudo ln -s /${HOSTNAME}/${user} /home/${user}/${user}
-        sudo ln -s /${HOSTNAME}/public /home/${user}/public
+        sudo ln -sn /${HOSTNAME}/${user} /home/${user}/${user}
+        sudo ln -sn /${HOSTNAME}/public /home/${user}/public
         sudo chown -R ${user}:${user} /${HOSTNAME}/${user}
         sudo chmod -R a-w /${HOSTNAME}/${user}
+        # reveal special directory: .zfs/snapshot
+        sudo chown ${user}:${user} /${HOSTNAME}/${user}/{,safe/}.zfs{,/snapshot}
     done
     # sticky bit to make all PUBLIC files owned by `publisher`
     sudo chown -R nobody:publisher /${HOSTNAME}/public
