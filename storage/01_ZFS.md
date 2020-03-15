@@ -180,6 +180,33 @@ __NOTE:__ For simplicity, use pool name "`${HOSTNAME}`".
     ```
 
 
+## Recipes
+
+### Send and Receive Snapshots
+Common commands to use for transferring datasets between two servers.
+
+The example below uses server names `SENDER`/`RECEIVER`, pool names `SENDER_POOL`/`RECEIVER_POOL`, dataset `DATA`, and snapshot name `SNAPPED`.
+
+1. If not yet done, snapshot the source folder.
+    ```bash
+    # on SENDER
+    sudo zfs snapshot SENDER_POOL/DATA@SNAPPED
+    ```
+1. Prepare `RECEIVER` to accept the stream.
+    ```bash
+    # on RECEIVER
+    mbuffer -s 128k -m 1G -I 9090 | sudo zfs recv -s -e RECEIVER_POOL
+    ```
+1. Initiate transfer from `SENDER`.
+    ```bash
+    # on SENDER
+    sudo zfs send SENDER_POOL/DATA@SNAPPED | mbuffer -s 128k -m 1G -O RECEIVER:9090
+    ```
+1. If the transfer is interrupted, the `-s` flag saves the `RECEIVER`'s intermediate state and allows the transfer to resume later.
+
+Source: [evercity.co.uk](https://everycity.co.uk/alasdair/2010/07/using-mbuffer-to-speed-up-slow-zfs-send-zfs-receive/)
+
+
 ## Next Steps
 
 * Setup [Samba access](../services/02_Samba.md)
