@@ -29,7 +29,7 @@ sudo apt-get install samba
             comment = Public Files
             browseable = yes
             read only = no
-            path = /${HOSTNAME}/pub
+            path = /${HOSTNAME}/public
             guest ok = no
             valid users = $USER `cat users.txt`
             create mask = 0770

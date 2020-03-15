@@ -101,13 +101,13 @@ __NOTE:__ For simplicity, use pool name "`${HOSTNAME}`".
 
 1. Create shared datasets.
     ```bash
-    echo "movie music picture tv" > pub_categories.txt
-    sudo zfs create ${HOSTNAME}/pub
-    for category in `cat pub_categories.txt`; do
-        sudo zfs create ${HOSTNAME}/pub/${category}
+    echo "movie music picture tv" > public_categories.txt
+    sudo zfs create ${HOSTNAME}/public
+    for category in `cat public_categories.txt`; do
+        sudo zfs create ${HOSTNAME}/public/${category}
     done
     ```
-    * Optionally, disallow creating uncategorized files: ```sudo chmod 550 /${HOSTNAME}/pub```
+    * Optionally, disallow creating uncategorized files: ```sudo chmod 550 /${HOSTNAME}/public```
 
 1. Create datasets for each user with sane parameters.
     ```bash
@@ -125,18 +125,18 @@ __NOTE:__ For simplicity, use pool name "`${HOSTNAME}`".
 1. Link to dataset in user homes, and set permissions.
     ```bash
     for user in $USER `cat users.txt`; do
-        # link to USER and PUB
+        # link to USER and PUBLIC
         sudo ln -s /${HOSTNAME}/${user} /home/${user}/${user}
-        sudo ln -s /${HOSTNAME}/pub /home/${user}/pub
+        sudo ln -s /${HOSTNAME}/public /home/${user}/public
         sudo chown -R ${user}:${user} /${HOSTNAME}/${user}
         sudo chmod -R a-w /${HOSTNAME}/${user}
     done
-    # sticky bit to make all PUB files owned by `publisher`
-    sudo chown -R nobody:publisher /${HOSTNAME}/pub
-    sudo chmod -R g+ws /${HOSTNAME}/pub
-    for category in `cat pub_categories.txt`; do
+    # sticky bit to make all PUBLIC files owned by `publisher`
+    sudo chown -R nobody:publisher /${HOSTNAME}/public
+    sudo chmod -R g+ws /${HOSTNAME}/public
+    for category in `cat public_categories.txt`; do
         # reveal special directory: .zfs/snapshot
-        sudo chown nobody:publisher /${HOSTNAME}/pub/${category}/.zfs{,/snapshot}
+        sudo chown nobody:publisher /${HOSTNAME}/public/${category}/.zfs{,/snapshot}
     done
     ```
 
