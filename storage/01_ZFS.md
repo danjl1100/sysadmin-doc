@@ -129,7 +129,6 @@ __NOTE:__ For simplicity, use pool name "`${HOSTNAME}`".
         sudo ln -sn /${HOSTNAME}/${user} /home/${user}/${user}
         sudo ln -sn /${HOSTNAME}/public /home/${user}/public
         sudo chown -R ${user}:${user} /${HOSTNAME}/${user}
-        sudo chmod -R a-w /${HOSTNAME}/${user}
         # reveal special directory: .zfs/snapshot
         sudo chown ${user}:${user} /${HOSTNAME}/${user}/{,safe/}.zfs{,/snapshot}
     done

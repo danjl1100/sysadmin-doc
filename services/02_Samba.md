@@ -61,9 +61,12 @@ sudo apt-get install samba
 1. Restart Samba: `sudo service smbd restart`
 
 ## ZFS Integration
-1. Add `zfs-auto-snapshot` hook for _Restore Previous Versions_ feature on windows clients.
-    ```bash
-    echo "
+Add `zfs-auto-snapshot` hook for _Restore Previous Versions_ feature on windows clients.  
+Source: [github.com/zfsonlinux](https://github.com/zfsonlinux/zfs-auto-snapshot/wiki/Samba) and [samba.org](https://www.samba.org/samba/docs/current/man-html/vfs_shadow_copy2.8.html)
+
+1. Edit Samba config: `sudo nano /etc/samba/smb.conf`
+1. Add the following in the `[general]` section. ___NOT___ below any share definition.
+    ```
     ;# allow ZFS snapshots to show up in 'Restore Previous Versions'
     vfs objects = shadow_copy2
     shadow: snapdir = .zfs/snapshot
@@ -72,7 +75,6 @@ sudo apt-get install samba
     shadow: format = -%Y-%m-%d-%H%M
     shadow: snapprefix = ^zfs-auto-snap_\(frequent\)\{0,1\}\(hourly\)\{0,1\}\(daily\)\{0,1\}\(monthly\)\{0,1\}
     shadow: delimiter = -20
-    " | sudo tee -a /etc/samba/smb.conf
     ```
 1. Restart Samba: `sudo service smbd restart`
 
