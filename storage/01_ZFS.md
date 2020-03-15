@@ -24,6 +24,10 @@ For Debian 10 (Buster), ZFS packages are included in the contrib repo.
     sudo modprobe zfs
     sudo apt-get install zfsutils-linux
     ```
+1. Set ZFS module to load on boot.
+    ```bash
+    echo zfs | sudo tee /etc/modules-load.d/zfs.conf
+    ```
 
 Source: [zfsonlinux instructions](https://github.com/zfsonlinux/zfs/wiki/Debian)
 
