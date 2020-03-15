@@ -174,7 +174,7 @@ __NOTE:__ For simplicity, use pool name "`${HOSTNAME}`".
 1. Wait for the script to report `pool needs scrub` to verify it is working.
 1. Schedule daily scrub of all pools
     ```bash
-    echo "#!/bin/sh
+    echo "#"'!'"/bin/sh
     /sbin/zpool scrub ${HOSTNAME}" | sudo tee /etc/cron.daily/zpool_scrub
     sudo chmod +x /etc/cron.daily/zpool_scrub
     ```
