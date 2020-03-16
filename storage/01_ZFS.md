@@ -135,6 +135,8 @@ __NOTE:__ For simplicity, use pool name "`${HOSTNAME}`".
     # sticky bit to make all PUBLIC files owned by `publisher`
     sudo chown -R nobody:publisher /${HOSTNAME}/public
     sudo chmod -R g+ws /${HOSTNAME}/public
+    # keep root level 'read-only'
+    sudo chmod g-w /${HOSTNAME}/public
     for category in `cat public_categories.txt`; do
         # reveal special directory: .zfs/snapshot
         sudo chown nobody:publisher /${HOSTNAME}/public/${category}/.zfs{,/snapshot}
