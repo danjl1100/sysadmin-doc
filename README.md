@@ -8,4 +8,5 @@ My personal guides for (re)configuring systems.
 1. [Samba access](./services/02_Samba.md)
 
 ### Extras
-1. [Docker](./services/03_Docker.md)
+* [Docker](./services/03_Docker.md)
+* [Syncthing](./services/04_Syncthing.md)

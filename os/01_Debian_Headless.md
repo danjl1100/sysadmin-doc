@@ -74,7 +74,7 @@ Boot into the non-graphical installer. Choose default (sane) options, noting the
 
 1. Install these handy tools
     ```bash
-    sudo apt-get install htop screen smartmontools parted rsync
+    sudo apt-get install htop screen smartmontools parted rsync curl
     ```
 
 ### Unattended Upgrades

@@ -32,8 +32,10 @@ sudo apt-get install samba
             path = /${HOSTNAME}/public
             guest ok = no
             valid users = $USER `cat users.txt`
-            create mask = 0770
-            directory mask = 0770
+            create mask = 0775
+            force create mode = 0775
+            directory mask = 0775
+            force directory mode = 0775
     " | sudo tee -a /etc/samba/smb.conf
     ```
 1. Add user shares:
@@ -47,8 +49,10 @@ sudo apt-get install samba
             path = /${HOSTNAME}/${user}
             guest ok = no
             valid users = ${user}
-            create mask = 0700
-            directory mask = 0700
+            create mask = 0775
+            force create mode = 0775
+            directory mask = 0775
+            force directory mode = 0775
     " | sudo tee -a /etc/samba/smb.conf
     done
     ```
