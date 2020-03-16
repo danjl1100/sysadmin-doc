@@ -77,6 +77,23 @@ Boot into the non-graphical installer. Choose default (sane) options, noting the
     sudo apt-get install htop screen smartmontools parted rsync
     ```
 
+### Unattended Upgrades
+
+Enable automatic security (and regular) updates.  Source: [debian.org](https://wiki.debian.org/UnattendedUpgrades)
+1. Install requisite packages.
+    ```bash
+    sudo apt-get install unattended-upgrades apt-listchanges
+    ```
+1. Enable mailing information about the upgrades.
+    ```bash
+    sudo sed -i 's#//Unattended-Upgrade::Mail "";#Unattended-Upgrade::Mail "root";#g'  /etc/apt/apt.conf.d/50unattended-upgrades
+    ```
+1. Enable auto-upgrades
+    ```bash
+    echo unattended-upgrades unattended-upgrades/enable_auto_updates boolean true | sudo debconf-set-selections
+    sudo dpkg-reconfigure -f noninteractive unattended-upgrades
+    ```
+
 ### Postfix Email
 Route `root` emails to a gmail account. Source: [easyengine.io](https://easyengine.io/tutorials/linux/ubuntu-postfix-gmail-smtp)
 
