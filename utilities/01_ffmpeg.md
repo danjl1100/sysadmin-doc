@@ -46,6 +46,19 @@ ffmpeg -i $INPUT -itsoffset $VIDEO_DELAY -i $INPUT -map 1:v -map 0:a -codec copy
 
 Source: [superuser answer](https://superuser.com/a/983153/1131203)
 
+### Keep all metadata
+
+Copy 4 streams of metadata, labeling subtitles as English
+```sh
+ffmpeg -i $INPUT -map 0:0 -map 0:1 -map 0:2 -map 0:3 -map 0:4 -codec copy -metadata:s:s:0 language=eng $OUTPUT.mkv
+```
+
+Re-encode video using libx264
+```sh
+ffmpeg -i $INPUT -map 0:0 -c:v libx264 -map 0:1 -map 0:2 -map 0:3 -map 0:4 -c:a aac -c:s copy -metadata:s:s:0 language=eng $OUTPUT.mp4
+```
+
+Source: [askubuntu answer](https://askubuntu.com/a/214351)
 
 <!--
 ## Next Steps [OR] Related
