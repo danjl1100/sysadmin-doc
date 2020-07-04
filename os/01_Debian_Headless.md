@@ -135,8 +135,9 @@ Route `root` emails to a gmail account. Source: [easyengine.io](https://easyengi
     root: user1
     user1: you@example.com
     " | sudo tee -a /etc/aliases
+    sudo newaliases
     ```
-    * Source: [brismuth.com](https://brismuth.com/scheduling-automated-zfs-scrubs-9b2b452e08a4)
+    * Sources: [brismuth.com](https://brismuth.com/scheduling-automated-zfs-scrubs-9b2b452e08a4), [stackexchange.com](https://unix.stackexchange.com/a/65015)
 1. Finally, test the configuration
     ```bash
     echo "Test mail from postfix, sent `date`" | mail -s "Test Postfix" you@example.com
