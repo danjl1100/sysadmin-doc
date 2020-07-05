@@ -169,6 +169,9 @@ __NOTE:__ For simplicity, use pool name "`${HOSTNAME}`".
     ```bash
     wget https://gist.githubusercontent.com/petervanderdoes/bd6660302404ed5b094d/raw \
     -O - | sudo tee /etc/cron.daily/zfs_health
+    # EDIT appropriately for Debian date params
+    #  (line 111, choose Ubuntu option)
+    sudo nano /etc/cron.daily/zfs_health
     sudo chmod +x /etc/cron.daily/zfs_health
     ```
     * __NOTE:__ failure output relies on root email setup.
