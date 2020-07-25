@@ -157,6 +157,23 @@ Create a `modprobe` conf file to blacklist the offending kvm modules:
 
 Source: [askubuntu answer](https://askubuntu.com/a/312858)
 
+#### Rescuing GRUB from another OS
+1. Boot into live OS similar to the one being rescued.
+1. Mount the drive to be rescued, including separate `/boot`, `/var`, and `/usr` partitions if applicable.
+1. Bind mount some necessary stuff: `for i in /sys /proc /run /dev; do sudo mount --bind "$i" "/mnt$i"; done`
+1. If EFI mode is used ([see this if unsure](https://askubuntu.com/a/764702/13398)), use `sudo fdisk -l | grep -i efi` to find the EFI partition. Then: `sudo mount /dev/sdXY /mnt/boot/efi`
+1. `sudo chroot /mnt`
+1. `update-grub`.   Can generally stop at this step.
+1. `grub-install /dev/sdX`
+1. `update-grub`
+1. Update EFI partition UUID if it changed.
+    ```
+    blkid | grep -i efi
+    grep -i efi /etc/fstab
+    ```
+1. If no errors, proceed with reboot. `exit; sudo reboot`
+
+Source: [askubuntu answer](https://askubuntu.com/a/88432)
 
 ## Next Steps
 
