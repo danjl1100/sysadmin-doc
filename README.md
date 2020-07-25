@@ -13,3 +13,4 @@ My personal guides for (re)configuring systems.
 
 ## Utilities
 * [ffmpeg](./utilities/01_ffmpeg.md)
+* [GnuPG](./utilities/02_GnuPG.md)
