@@ -2300,6 +2300,12 @@ By default, YubiKey will perform encryption, signing and authentication operatio
 
 To require a touch for each key operation, install [YubiKey Manager](https://developers.yubico.com/yubikey-manager/) and recall the Admin PIN:
 
+Yubikey Manager install on Debian (from [github install docs](https://github.com/Yubico/yubikey-manager/blob/master/doc/development.adoc#linux-debian-based-distributions))
+```console
+sudo apt install swig libykpers-1-1 libu2f-udev pcscd libpcsclite-dev
+pip install --user yubikey-manager
+```
+
 **Note** Older versions of YubiKey Manager use `touch` instead of `set-touch` in the following commands.
 
 Authentication:
