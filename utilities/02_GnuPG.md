@@ -436,6 +436,22 @@ throw-keyids
 
 Disable networking for the remainder of the setup.
 
+### EXTRA: Override graphical pin-entry
+The default gui pinentry method (`pinentry-gnome3` in debian-live-10.4.0-amd64-xfce) caches the pin by default. This caching is counterproductive, as the setup should test the written copy of all passphrases.
+
+For systems with pinentry handled by "alternatives", simply update the alternatives as desired:
+```console
+$ sudo update-alternatives --query pinentry
+$ sudo update-alternatives --set pinentry /usr/bin/pinentry-curses
+$ sudo update-alternatives --query pinentry #verify change
+```
+
+Alternatively, use a method similar to [this superuser answer](https://superuser.com/a/521027) to bypass the "alternatives" system and directly specify the pinentry method for gpg-agent:
+```console
+$ echo "pinentry-program /usr/bin/pinentry-curses" >> $GNUPGHOME/gpg-agent.conf
+$ gpg-connect-agent reloadagent /bye
+```
+
 # Master key
 
 The first key to generate is the master key. It will be used for certification only: to issue sub-keys that are used for encryption, signing and authentication.
