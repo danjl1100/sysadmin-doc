@@ -32,7 +32,9 @@ Keys stored on YubiKey are [non-exportable](https://support.yubico.com/support/s
 
 **New!** [drduh/Purse](https://github.com/drduh/Purse) is a password manager which uses GPG and YubiKey.
 
+<!--
 If you have a comment or suggestion, please open an [Issue](https://github.com/drduh/YubiKey-Guide/issues) on GitHub.
+-->
 
 - [Purchase](#purchase)
 - [Prepare environment](#prepare-environment)
@@ -233,6 +235,9 @@ $ sudo apt -y install wget gnupg2 gnupg-agent dirmngr cryptsetup scdaemon pcscd 
 To download a copy of this guide:
 
 ```console
+$ # this copy
+$ wget https://raw.githubusercontent.com/danjl1100/sysadmin-doc/master/utilities/02_GnuPG.md
+$ # original source
 $ wget https://raw.githubusercontent.com/drduh/YubiKey-Guide/master/README.md
 ```
 
@@ -1519,7 +1524,7 @@ $ gpg --delete-secret-key $KEYID
 
 # Using keys
 
-Download [drduh/config/gpg.conf](https://github.com/drduh/config/blob/master/gpg.conf):
+Download [drduh/config/gpg.conf](https://github.com/drduh/config/blob/master/gpg.conf) ([local mirror](./gpg.conf)):
 
 ```console
 $ cd ~/.gnupg ; wget https://raw.githubusercontent.com/drduh/config/master/gpg.conf
@@ -1913,7 +1918,7 @@ Probably the biggest thing missing from `gpg-agent`'s ssh agent support is being
 
 ## Create configuration
 
-Create a hardened configuration for gpg-agent by downloading [drduh/config/gpg-agent.conf](https://github.com/drduh/config/blob/master/gpg-agent.conf):
+Create a hardened configuration for gpg-agent by downloading [drduh/config/gpg-agent.conf](https://github.com/drduh/config/blob/master/gpg-agent.conf) ([local mirror](./gpg-agent.conf)):
 
 ```console
 $ cd ~/.gnupg
