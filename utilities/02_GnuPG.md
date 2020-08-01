@@ -1545,6 +1545,8 @@ Download [drduh/config/gpg.conf](https://github.com/drduh/config/blob/master/gpg
 ```console
 $ cd ~/.gnupg ; wget https://raw.githubusercontent.com/drduh/config/master/gpg.conf
 
+$ vim ~/.gnupg/gpg.conf  ## comment out line "throw-keyids", since this is needed for Android OpenKeychain app
+
 $ chmod 600 gpg.conf
 ```
 
