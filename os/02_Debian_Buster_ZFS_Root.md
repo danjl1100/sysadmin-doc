@@ -675,11 +675,12 @@ Step 6: First Boot
 
     If you installed to multiple disks, install GRUB on the additional disks.
 
-    -   For legacy (BIOS) booting:
+    -   ~~For legacy (BIOS) booting:~~
 
-            dpkg-reconfigure grub-pc
+		<pre><code><del>    dpkg-reconfigure grub-pc
+		</del></code></pre>
 
-        Hit enter until you get to the device selection screen. Select (using the space bar) all of the disks (not partitions) in your pool.
+        ~~Hit enter until you get to the device selection screen. Select (using the space bar) all of the disks (not partitions) in your pool.~~
 
     -   For UEFI booting:
 
