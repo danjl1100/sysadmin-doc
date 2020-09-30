@@ -524,13 +524,17 @@ Step 4: System Configuration
     [Service]
     Type=oneshot
     RemainAfterExit=yes
+    ExecStartPre=/bin/sh -c '[ -f /etc/zfs/zpool.cache ] && mv /etc/zfs/zpool.cache /etc/zfs/preboot_zpool.cache || true'
     ExecStart=/sbin/zpool import -N -o cachefile=none bpool
+    ExecStartPost=/bin/sh -c '[ -f /etc/zfs/preboot_zpool.cache ] && mv /etc/zfs/preboot_zpool.cache /etc/zfs/zpool.cache || true'
 
     [Install]
     WantedBy=zfs-import.target
     ```
 
         systemctl enable zfs-import-bpool.service
+
+    **Note:** Incorporates [tweak from @terem42](https://github.com/openzfs/zfs/issues/8549#issuecomment-569120693) to protect `zpool.cache` from being overwritten during each boot.
 
 12. ~~Optional (but~~ recommended): Mount a tmpfs to `/tmp`
 
@@ -800,6 +804,16 @@ Step 9: Final Cleanup
 
 Next Steps
 ----------
+
+Import pools from other devices, storing them in the cache.
+
+    sudo zpool import -d /dev/disk/by-id POOL_NAME
+    ...
+    sudo touch /etc/zfs/zfs-list.cache/POOL_NAME
+    cat /etc/zfs/zfs-list.cache/POOL_NAME
+
+
+Next,
 
 * [SSH access](../services/01_SSH.md)
 * [Samba access](../services/02_Samba.md)
