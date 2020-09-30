@@ -3,6 +3,8 @@ Debian Buster Root on ZFS
 
 [ORIGINAL SOURCE](https://github.com/openzfs/openzfs-docs/blob/a12e60f4377849d23fadfa09e5a63b8dafb4cda1/docs/Getting%20Started/Debian/Debian%20Buster%20Root%20on%20ZFS.rst)
 
+[Next Steps](#next-steps)
+
 Overview
 --------
 
@@ -793,6 +795,16 @@ Step 9: Final Cleanup
     ~~Store that backup somewhere safe (e.g. cloud storage). It is protected by your LUKS passphrase, but you may wish to use additional encryption.~~
 
     ~~**Hint:** If you created a mirror or raidz topology, repeat this for each LUKS volume (`luks2`, etc.).~~
+
+
+Next Steps
+----------
+
+* [SSH access](../services/01_SSH.md)
+* [Samba access](../services/02_Samba.md)
+* [Docker](../services/03_Docker.md)
+* [Syncthing](../services/04_Syncthing.md)
+
 
 Troubleshooting
 ---------------
