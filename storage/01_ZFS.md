@@ -176,12 +176,11 @@ __NOTE:__ For simplicity, use pool name "`${HOSTNAME}`".
     ```
     * __NOTE:__ failure output relies on root email setup.
 1. Wait for the script to report `pool needs scrub` to verify it is working.
-1. Schedule daily scrub of all pools
-    ```bash
-    echo "#"'!'"/bin/sh
+1. ~~Schedule daily scrub of all pools~~
+    <pre><code><del> echo "#"'!'"/bin/sh
     /sbin/zpool scrub ${HOSTNAME}" | sudo tee /etc/cron.daily/zpool_scrub
-    sudo chmod +x /etc/cron.daily/zpool_scrub
-    ```
+    sudo chmod +x /etc/cron.daily/zpool_scrub</del></code></pre>
+    * __NOTE:__ monthly scrub is provided by `/etc/cron.d/zfsutils-linux`
 
 
 ## Recipes
