@@ -817,6 +817,7 @@ Next,
 
 * [Debian General Tools setup](../os/01_Debian_Headless.md#general-tools)
 * [SSH access](../services/01_SSH.md)
+* [ZFS enhancements](../storage/01_ZFS.md#enhancements)
 * [Samba access](../services/02_Samba.md)
 * [Docker](../services/03_Docker.md)
 * [Syncthing](../services/04_Syncthing.md)
