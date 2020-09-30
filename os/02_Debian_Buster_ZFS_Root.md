@@ -815,6 +815,7 @@ Import pools from other devices, storing them in the cache.
 
 Next,
 
+* [Debian General Tools setup](../os/01_Debian_Headless.md#general-tools)
 * [SSH access](../services/01_SSH.md)
 * [Samba access](../services/02_Samba.md)
 * [Docker](../services/03_Docker.md)
