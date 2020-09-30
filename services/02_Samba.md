@@ -69,7 +69,7 @@ Add `zfs-auto-snapshot` hook for _Restore Previous Versions_ feature on windows 
 Source: [github.com/zfsonlinux](https://github.com/zfsonlinux/zfs-auto-snapshot/wiki/Samba) and [samba.org](https://www.samba.org/samba/docs/current/man-html/vfs_shadow_copy2.8.html)
 
 1. Edit Samba config: `sudo nano /etc/samba/smb.conf`
-1. Add the following in the `[general]` section. ___NOT___ below any share definition.
+1. Add the following in the `[global]` section. ___NOT___ below any share definition.
     ```
     ;# allow ZFS snapshots to show up in 'Restore Previous Versions'
     vfs objects = shadow_copy2
