@@ -1,6 +1,6 @@
 # Docker
 
-Source [docs.docker.com](https://docs.docker.com/engine/install/debian/#install-using-the-repository)
+Sources: [Docker Engine (docs.docker.com)](https://docs.docker.com/engine/install/debian/#install-using-the-repository), [Docker Compose (docs.docker.com)](https://docs.docker.com/compose/install/)
 
 ## Prerequisites
 
@@ -40,6 +40,12 @@ Source [docs.docker.com](https://docs.docker.com/engine/install/debian/#install-
 1. Verify the installation is working.
     ```bash
     sudo docker run --rm hello-world
+    ```
+1. Install docker-compose.
+    ```bash
+    # install current latest release (NOTE: CHECK FOR MORE RECENT VERSIONS FIRST)
+    sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    sudo chmod +x /usr/local/bin/docker-compose
     ```
 
 
