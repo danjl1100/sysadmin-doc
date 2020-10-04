@@ -905,3 +905,9 @@ nvram = [
 
 -   Set `disk.EnableUUID = "TRUE"` in the vmx file or vsphere configuration. Doing this ensures that `/dev/disk` aliases are created in the guest.
 
+## Next Steps
+
+* Setup [SSH access](../services/01_SSH.md)
+
+
+[Homepage](../README.md)
