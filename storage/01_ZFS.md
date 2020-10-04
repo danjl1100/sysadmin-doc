@@ -209,6 +209,33 @@ The example below uses server names `SENDER`/`RECEIVER`, pool names `SENDER_POOL
 
 Source: [evercity.co.uk](https://everycity.co.uk/alasdair/2010/07/using-mbuffer-to-speed-up-slow-zfs-send-zfs-receive/)
 
+### Auto Mirror
+
+Use [zfs-auto-mirror](https://github.com/nadavgolden/zfs-auto-mirror) shell script to pull snapshots from the host.
+
+1. Download script on both server and client.
+    ```bash
+    wget https://raw.githubusercontent.com/nadavgolden/zfs-auto-mirror/master/zfs-auto-mirror.sh
+    chmod +x zfs-auto-mirror.sh
+    ```
+1. Create users with limited rights: only zfs-send/-receive permissions for the datasets of interest.
+```bash
+# on source host
+sudo useradd zfs-sender
+sudo zfs allow zfs-sender mount,snapshot,send,hold DATASET_PATHS
+
+# on destination host
+sudo useradd zfs-receiver
+sudo zfs allow zfs-receiver mount,create,receive DATASET_PATHS
+
+# create ssh-key with blank passphrase
+ssh-keygen -t rsa
+# copy key to zfs-sender account
+ssh-copy-id zfs-sender@SOURCE_HOST
+```
+
+Source: [superuser.com](https://superuser.com/a/1483245)
+
 
 ## Next Steps
 
