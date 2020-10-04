@@ -52,6 +52,17 @@ sudo systemctl start syncthing@syncthing.service
 ```
 
 
+### Optional Tweaks
+
+1. Increase ionotify limit (web gui often warns about this one). Follow instructions at [docs.syncthing.net](https://docs.syncthing.net/users/faq.html#inotify-limits)
+    ```bash
+    # increase limit for next reboot
+    echo "fs.inotify.max_user_watches=204800" | sudo tee -a /etc/sysctl.conf
+    # increase current limit
+    sudo sh -c 'echo 204800 > /proc/sys/fs/inotify/max_user_watches'
+    ```
+
+
 ## Next Steps
 
 ```
