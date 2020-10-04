@@ -11,6 +11,7 @@ My personal guides for (re)configuring systems.
 ### Extras
 * [Docker](./services/03_Docker.md)
 * [Syncthing](./services/04_Syncthing.md)
+* [KVM](./services/05_KVM.md)
 
 ## Utilities
 * [ffmpeg](./utilities/01_ffmpeg.md)
