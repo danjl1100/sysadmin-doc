@@ -213,26 +213,49 @@ Source: [evercity.co.uk](https://everycity.co.uk/alasdair/2010/07/using-mbuffer-
 
 Use [zfs-auto-mirror](https://github.com/nadavgolden/zfs-auto-mirror) shell script to pull snapshots from the host.
 
+1. Create users with limited rights: only zfs-send/-receive permissions for the datasets of interest.
+    ```bash
+    # on source host
+    sudo useradd zfs-sender -m -s /bin/bash
+    sudo passwd zfs-sender #create TEMPORARY password
+    sudo zfs allow zfs-sender mount,snapshot,send,hold DATASET_PATHS
+    ln -s /sbin/zfs /usr/bin/zfs
+    
+    # on destination host
+    sudo useradd zfs-receiver -m -s /bin/bash
+    sudo zfs allow zfs-receiver mount,create,receive DATASET_PATHS
+    ln -s /sbin/zfs /usr/bin/zfs
+    
+    sudo -u zfs-receiver /bin/bash
+    $ ssh-keygen -t rsa #create with no passphrase, in ~/.ssh/SOURCE_HOST.rsa
+    $ echo "Host SOURCE_HOST
+    	HostName SOURCE_HOST
+    	IdentityFile ~/.ssh/SENDER_HOSTNAME.rsa
+    	User zfs-sender" >> ~/.ssh/config
+    $ ssh-copy-id -i ~/.ssh/SENDER_HOSTNAME.rsa.pub SOURCE_HOST
+    $ exit
+    
+    # on source host
+    sudo passwd -l zfs-sender
+    ```
 1. Download script on both server and client.
     ```bash
-    wget https://raw.githubusercontent.com/nadavgolden/zfs-auto-mirror/master/zfs-auto-mirror.sh
-    chmod +x zfs-auto-mirror.sh
+    # on destination host
+    sudo -u zfs-receiver /bin/bash
+
+    mkdir ~/bin
+    cd ~/bin
+    wget https://raw.githubusercontent.com/nadavgolden/zfs-auto-mirror/master/zfs-auto-mirror.sh --output-file=zfs-auto-mirror
+    chmod +x zfs-auto-mirror
+
+
+    ssh SOURCE_HOST
+
+    mkdir ~/bin
+    cd ~/bin
+    wget https://raw.githubusercontent.com/nadavgolden/zfs-auto-mirror/master/zfs-auto-mirror.sh --output-file=zfs-auto-mirror
+    chmod +x zfs-auto-mirror
     ```
-1. Create users with limited rights: only zfs-send/-receive permissions for the datasets of interest.
-```bash
-# on source host
-sudo useradd zfs-sender
-sudo zfs allow zfs-sender mount,snapshot,send,hold DATASET_PATHS
-
-# on destination host
-sudo useradd zfs-receiver
-sudo zfs allow zfs-receiver mount,create,receive DATASET_PATHS
-
-# create ssh-key with blank passphrase
-ssh-keygen -t rsa
-# copy key to zfs-sender account
-ssh-copy-id zfs-sender@SOURCE_HOST
-```
 
 Source: [superuser.com](https://superuser.com/a/1483245)
 
