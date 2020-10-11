@@ -238,23 +238,19 @@ Use [zfs-auto-mirror](https://github.com/nadavgolden/zfs-auto-mirror) shell scri
     # on source host
     sudo passwd -l zfs-sender
     ```
-1. Download script on both server and client.
+1. Download script on client.
     ```bash
     # on destination host
     sudo -u zfs-receiver /bin/bash
 
-    mkdir ~/bin
-    cd ~/bin
-    wget https://raw.githubusercontent.com/nadavgolden/zfs-auto-mirror/master/zfs-auto-mirror.sh --output-file=zfs-auto-mirror
-    chmod +x zfs-auto-mirror
+    wget https://raw.githubusercontent.com/nadavgolden/zfs-auto-mirror/master/zfs-auto-mirror.sh
+    chmod +x zfs-auto-mirror.sh
 
-
-    ssh SOURCE_HOST
-
-    mkdir ~/bin
-    cd ~/bin
-    wget https://raw.githubusercontent.com/nadavgolden/zfs-auto-mirror/master/zfs-auto-mirror.sh --output-file=zfs-auto-mirror
-    chmod +x zfs-auto-mirror
+    # apply fix for local snapshot detection (likely only needed for older zfsonlinux versions ~0.7.12)
+    echo '141c141
+    <     LOCAL_SNAPSHOTS=$(zfs list -t snapshot -H -S creation -o name ${LOCAL_DATASET} | grep ${LABEL} | cut -d "@" -f2-)
+    ---
+    >     LOCAL_SNAPSHOTS=$(zfs list -r -t snapshot -H -S creation -o name ${LOCAL_DATASET} | grep ${LABEL} | cut -d "@" -f2-)' | patch zfs-auto-mirror.sh
     ```
 
 Source: [superuser.com](https://superuser.com/a/1483245)
