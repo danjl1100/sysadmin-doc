@@ -230,9 +230,9 @@ Use [zfs-auto-mirror](https://github.com/nadavgolden/zfs-auto-mirror) shell scri
     $ ssh-keygen -t rsa #create with no passphrase, in ~/.ssh/SOURCE_HOST.rsa
     $ echo "Host SOURCE_HOST
     	HostName SOURCE_HOST
-    	IdentityFile ~/.ssh/SENDER_HOSTNAME.rsa
+    	IdentityFile ~/.ssh/SOURCE_HOST.rsa
     	User zfs-sender" >> ~/.ssh/config
-    $ ssh-copy-id -i ~/.ssh/SENDER_HOSTNAME.rsa.pub SOURCE_HOST
+    $ ssh-copy-id -i ~/.ssh/SOURCE_HOST.rsa.pub SOURCE_HOST
     $ exit
     
     # on source host
@@ -251,6 +251,11 @@ Use [zfs-auto-mirror](https://github.com/nadavgolden/zfs-auto-mirror) shell scri
     <     LOCAL_SNAPSHOTS=$(zfs list -t snapshot -H -S creation -o name ${LOCAL_DATASET} | grep ${LABEL} | cut -d "@" -f2-)
     ---
     >     LOCAL_SNAPSHOTS=$(zfs list -r -t snapshot -H -S creation -o name ${LOCAL_DATASET} | grep ${LABEL} | cut -d "@" -f2-)' | patch zfs-auto-mirror.sh
+    ```
+1. Setup mirroring as you wish, running commands like:
+    ```bash
+    sudo -u zfs-receiver /bin/bash
+    $ ./zfs-auto-mirror.sh -p -d 1 SOURCE_HOST SOURCE_DATASET DESTINATION_DATASET
     ```
 
 Source: [superuser.com](https://superuser.com/a/1483245)
