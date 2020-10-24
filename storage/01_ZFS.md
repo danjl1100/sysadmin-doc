@@ -180,7 +180,15 @@ __NOTE:__ For simplicity, use pool name "`${HOSTNAME}`".
     <pre><code><del> echo "#"'!'"/bin/sh
     /sbin/zpool scrub ${HOSTNAME}" | sudo tee /etc/cron.daily/zpool_scrub
     sudo chmod +x /etc/cron.daily/zpool_scrub</del></code></pre>
-    * __NOTE:__ monthly scrub is provided by `/etc/cron.d/zfsutils-linux`
+    * ~~__NOTE:__ monthly scrub is provided by `/etc/cron.d/zfsutils-linux`~~
+    * Monthly scrub provided by zfsutils-linux has issues (can skip a month if system is powered down)
+    * Better to use anacron:
+    ```bash
+    # comment-out the scrub line
+    sudo vim /etc/cron.d/zfsutils-linux
+    for pool in rpool bpool ${HOSTNAME}; do echo "/sbin/zpool scrub ${pool}"; done | sudo tee /etc/cron.monthly/zpool_scrub
+    sudo chmod +x /etc/cron.monthly/zpool_scrub
+    ```
 
 
 ## Recipes
