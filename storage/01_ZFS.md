@@ -186,7 +186,7 @@ __NOTE:__ For simplicity, use pool name "`${HOSTNAME}`".
     ```bash
     # comment-out the scrub line
     sudo vim /etc/cron.d/zfsutils-linux
-    for pool in rpool bpool ${HOSTNAME}; do echo "/sbin/zpool scrub ${pool}"; done | sudo tee /etc/cron.monthly/zpool_scrub
+    (echo '#!/bin/sh'; for pool in rpool bpool ${HOSTNAME}; do echo "/sbin/zpool scrub ${pool}"; done) | sudo tee /etc/cron.monthly/zpool_scrub
     sudo chmod +x /etc/cron.monthly/zpool_scrub
     ```
 
