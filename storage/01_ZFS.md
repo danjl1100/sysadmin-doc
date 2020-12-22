@@ -190,6 +190,7 @@ __NOTE:__ For simplicity, use pool name "`${HOSTNAME}`".
     sudo chmod +x /etc/cron.monthly/zpool_scrub
     ```
 
+See [zfs_health_ignore_error](./zfs_health_ignore_error) for an example of ignoring a corruption error that you are OK with ignoring.
 
 ## Recipes
 
