@@ -3,12 +3,15 @@ Instead, these steps install Debian and then add OMV on top.
 
 
 1. Install debian using net-install image
-    https://www.debian.org/CD/netinst/
+    1. Download debian net-install .iso file from https://www.debian.org/CD/netinst/
+    1. Download [win32diskimager](https://sourceforge.net/projects/win32diskimager/) or similar (rufus?)
+    1. Write the debian .iso to the USB drive.
+    3. Boot the installer, then use the following install options:
     - NO grahical install
     - YES SSH server
     - Root password
     - Username: wayne (other users will be added later)
-    1. Set static IP address to 192.168.1.51 (edited /etc/network/interfaces)
+    4. Set static IP address to 192.168.1.51 (edited /etc/network/interfaces)
 1. Install OMV using OMV-debian instructions
     https://openmediavault.readthedocs.io/en/5.x/installation/on_debian.html
 1. Install OMV-Extras plugin, instructions on this site (easiest to install through Console/SSH)
