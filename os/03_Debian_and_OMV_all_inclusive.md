@@ -11,6 +11,7 @@ Instead, these steps install Debian and then add OMV on top.
     5. Write the debian .iso to the INSTALLER usb drive.
     6. Boot the installer, then use the following install options:
         1. NO grahical install
+        1. Hostname: `abrums`
         1. User Setup:
             - Root password
             - Username: wayne (other users will be added later)
