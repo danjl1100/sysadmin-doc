@@ -3,16 +3,40 @@ Instead, these steps install Debian and then add OMV on top.
 
 
 1. Install debian using net-install image
-    1. Download debian net-install .iso file from https://www.debian.org/CD/netinst/
-    1. Download [win32diskimager](https://sourceforge.net/projects/win32diskimager/) or similar (rufus?)
-    1. Write the debian .iso to the USB drive.
-    1. Boot the installer, then use the following install options:
-        - NO grahical install
-        - YES SSH server
-        - Root password
-        - Username: wayne (other users will be added later)
-    1. Set static IP address to 192.168.1.51 (edit /etc/network/interfaces)
-        1. TODO - add details
+    1. Before starting, identify (1) the INSTALLER usb drive, and (2) the TARGET boot drive (USB drive, hard drive, etc.).
+        - Reasoning: The installer cannot install over itself, so there must be 2 drives.
+        - PRO TIP: Pick a different sized drive for the TARGET, so it will be easy to find which drive to pick in the installer.
+    3. Download debian net-install .iso file from https://www.debian.org/CD/netinst/
+    4. Download [win32diskimager](https://sourceforge.net/projects/win32diskimager/) or similar (rufus?)
+    5. Write the debian .iso to the INSTALLER usb drive.
+    6. Boot the installer, then use the following install options:
+        1. NO grahical install
+        1. User Setup:
+            - Root password
+            - Username: wayne (other users will be added later)
+        1. Partition/Disk Selection:
+            - Select the TARGET drive, in the free space 
+        1. Additional Software menu:
+            - Change SSH server to YES
+    7. Reboot when the installer asks you to.
+    8. Manually set the IP address to static 192.168.1.51 (edit /etc/network/interfaces)
+        1. Login as root
+        2. Run this command: `nano /etc/network/interfaces`
+        3. Use the text editor to change the `eth0` section to match below.
+            - `eth0` might be called something else like `enp20s0`, use the existing name instead of `eth0` in the snippet below.
+            - Do not change any of the top lines referencing `lo` (localhost). 
+            ```conf
+            auto eth0
+            iface eth0 inet static
+            address 192.168.1.51
+            netmask 255.255.255.0
+            gateway 192.168.1.1
+            dns-nameservers 192.168.1.1
+            ```
+        4. After editing, use `Ctrl+O` to write the file (output the file). Then `Ctrl+X` to exit.
+        5. Reboot by running this command: `reboot`
+            - You can now use [PuTTY](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) to SSH to the server, connecting to `root@192.168.1.51` instead of manually typing at the computer's monitor/keyboard.
+            - You can also keep using the computer's keyboard/monitor for the following steps. Your preference.
 1. Install OMV using OMV-debian instructions
     https://openmediavault.readthedocs.io/en/5.x/installation/on_debian.html
 1. Install OMV-Extras plugin, instructions on this site (easiest to install through Console/SSH)
@@ -21,7 +45,8 @@ Instead, these steps install Debian and then add OMV on top.
     1. Change admin password to match Root password (for convenience). 
     1. Install ZFS plugin through OMV > Plugins menu
         1. search for package name "openmediavault-zfs"
-        1. If the packages are broken, run these commands. hopefully this doesn't happen everytime...
+        2. If installation succeeds, skip this step.
+            Otherwise, if installation fails, or packages appear broken, then run these commands. Hopefully this doesn't happen everytime...
             ```sh
             #print a list of not-configured packages
             dpkg -C
