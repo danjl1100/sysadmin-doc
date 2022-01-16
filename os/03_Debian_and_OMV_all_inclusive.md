@@ -16,6 +16,7 @@ Instead, these steps install Debian and then add OMV on top.
             - Root password
             - Username: wayne (other users will be added later)
         1. Partition/Disk Selection:
+            - Guided - use entire disk
             - Select the TARGET drive, in the free space 
         1. Additional Software menu:
             - Change SSH server to YES
