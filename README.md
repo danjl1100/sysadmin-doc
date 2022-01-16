@@ -1,6 +1,7 @@
 # sysadmin-doc
 My personal guides for (re)configuring systems.
 - [Debian Buster with ZFS Root](./os/02_Debian_Buster_ZFS_Root.md)
+- [Debian + OMV all inclusive](./os/03_Debian_and_OMV_all_inclusive.md)
 
 ## NAS Server (Debian + ZFS)
 1. [Debian headless](./os/01_Debian_Headless.md)
