@@ -37,7 +37,7 @@ Instead, these steps install Debian and then add OMV on top.
             ```
         4. After editing, use `Ctrl+O` to write the file (output the file). Then `Ctrl+X` to exit.
         5. Reboot by running this command: `reboot`
-            - You can now use [PuTTY](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) to SSH to the server, connecting to `root@192.168.1.51` instead of manually typing at the computer's monitor/keyboard.
+            - You can now use [PuTTY (on windows)](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) or [Connectbot (on Android)](https://play.google.com/store/apps/details?id=org.connectbot) to SSH to the server, connecting to `root@192.168.1.51` instead of manually typing at the computer's monitor/keyboard.
             - You can also keep using the computer's keyboard/monitor for the following steps. Your preference.
 1. Install OMV using OMV-debian instructions
     https://openmediavault.readthedocs.io/en/5.x/installation/on_debian.html
