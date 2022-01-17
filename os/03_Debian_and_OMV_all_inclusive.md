@@ -25,8 +25,9 @@ Instead, these steps install Debian and then add OMV on top.
     7. Reboot when the installer asks you to.
     8. Manually set the IP address to static 192.168.1.51 (edit /etc/network/interfaces)
         1. Login as root
+        1. Find the name of your network interface by running: `ip addr show`
         2. Run this command: `nano /etc/network/interfaces`
-        3. Use the text editor to change the `eth0` section to match below.
+        3. Use the text editor to add the text below, changing the existing `dhcp` section if it exists.
             - `eth0` might be called something else like `enp20s0`, use the existing name instead of `eth0` in the snippet below.
             - Do not change any of the top lines referencing `lo` (localhost). 
             ```conf
