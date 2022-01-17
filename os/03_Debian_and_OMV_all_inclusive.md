@@ -19,6 +19,7 @@ Instead, these steps install Debian and then add OMV on top.
             - Guided - use entire disk
             - Select the TARGET drive, in the free space 
         1. Additional Software menu:
+            - Uncheck Desktop and Gnome
             - Change SSH server to YES
     7. Reboot when the installer asks you to.
     8. Manually set the IP address to static 192.168.1.51 (edit /etc/network/interfaces)
