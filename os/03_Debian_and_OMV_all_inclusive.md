@@ -27,9 +27,9 @@ Instead, these steps install Debian and then add OMV on top.
         1. Login as root
         1. Find the name of your network interface by running: `ip addr show`
         2. Run this command: `nano /etc/network/interfaces`
-        3. Use the text editor to add the text below, changing the existing `dhcp` section if it exists.
+        3. Use the text editor to add the text block shown in these instructions below, changing the existing `dhcp` section if it exists.
             - `eth0` might be called something else like `enp20s0`, use the existing name instead of `eth0` in the snippet below.
-            - Do not change any of the top lines referencing `lo` (localhost). 
+            - Do not change any of the top lines referencing `lo` (localhost), just add after the `lo` section.
             ```conf
             auto eth0
             iface eth0 inet static
