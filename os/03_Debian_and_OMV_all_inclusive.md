@@ -44,7 +44,22 @@ Instead, these steps install Debian and then add OMV on top.
             - You can also keep using the computer's keyboard/monitor for the following steps. Your preference.
 1. Install OMV using OMV-debian instructions
     https://openmediavault.readthedocs.io/en/5.x/installation/on_debian.html
-1. Install OMV-Extras plugin, instructions on this site (easiest to install through Console/SSH)
+1. Set/Verify the network settings in OMV control panel
+    1. Open:  System > Network.  Interfaces tab. Look at the list of devices.
+    2. If your network device IS LISTED, then Edit to verify the settings (especially DNS Servers) to match the step below.
+    3. If your network device `enp1s0` (or your network device) is NOT listed, then click the "Add" button to add "Ethernet":
+        - General settings
+            - Pick your network device from the list
+        - IPv4
+            - Method = Static
+            - Address = 192.168.1.51
+            - Netmask = 255.255.255.0
+            - Gateway = 192.168.1.1
+        - IPv6 - disabled
+        - Advanced Settings
+            - DNS Servers = 8.8.8.8
+            - (leave all other defaults)
+3. Install OMV-Extras plugin, instructions on this site (easiest to install through Console/SSH)
     http://omv-extras.org/
 1. Open the OMV control panel. This time, the default login was username: "admin" and password: "openmediavault".
     1. Change admin password to match Root password (for convenience). 
