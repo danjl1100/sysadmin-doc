@@ -1,6 +1,12 @@
+# Table of Contents
+1. [Install](#Install)
+1. [Settings](#Settings)
+1. [ZFS Health Checks](#ZFS-Health-Checks)
+
 Motivation: OMV installer did not create a bootable drive at the end. Kept saying "Insert boot device and press any key" on multiple PCs.
 Instead, these steps install Debian and then add OMV on top.
 
+## Install
 
 1. Install debian using net-install image
     1. Before starting, identify (1) the INSTALLER usb drive, and (2) the TARGET boot drive (USB drive, hard drive, etc.).
@@ -108,6 +114,7 @@ Instead, these steps install Debian and then add OMV on top.
 
     1. Verify the installation by checking: `zfs list -t snapshot` command output for recent timestamps.
 
+## Settings
 
 1. Check the OMV settings against these screenshots:
 
@@ -146,3 +153,85 @@ Instead, these steps install Debian and then add OMV on top.
     1. Network Inferfaces
 
         ![abrums_OVM_network_interfaces](https://user-images.githubusercontent.com/45136864/149631120-0c4547f0-30d6-4ea2-9dbf-3738128d3759.png)
+
+## ZFS Health Checks
+
+1. Use PuTTY to login to the server as user `root`
+1. Run any of these commands to look at specific ZFS info:
+    - (Lowest-level commands)
+    - `zpool status` shows **drive status**, checksum errors (right-most column).
+    - `zpool list` lists the pool **size usage**, fragmentation, and capacity. 
+    - `zfs list` lists the ZFS-datasets (top-level **folders**) usage.
+    - This command will list all the **snapshots**, sorted by the size used (biggest at the bottom)
+        - `zfs list -rt snapshot | awk '{ print $2 " " $1}' | sort -h`
+    - (Highest-level commands)
+
+Examples:
+1. `zpool status` - Healthy (error count all 0) and scrub shows no errors (scrub repaired 0B, within past week).
+    - Ignore the "upgrade pool" status/action, this is irreversible not good for compatibility.
+    - NOTE: Serial numbers obscured.
+    ``` text
+    [root@abrums:~]# zpool status
+      pool: abrums
+     state: ONLINE
+    status: Some supported and requested features are not enabled on the pool.
+        The pool can still be used, but some features are unavailable.
+    action: Enable all features using 'zpool upgrade'. Once this is done,
+        the pool may no longer be accessible by software that does not support
+        the features. See zpool-features(7) for details.
+      scan: scrub repaired 0B in 04:47:36 with 0 errors on Sun Nov 20 06:47:41 2022  <-- GOOD, scrubbed recently
+    config:
+
+        NAME                                         STATE     READ WRITE CKSUM
+        abrums                                       ONLINE       0     0     0      <-- GOOD, zero drive errors
+          raidz1-0                                   ONLINE       0     0     0
+            ata-ST2000DM008-xxxxxx_xxxxxxxx          ONLINE       0     0     0
+            ata-ST2000DM008-xxxxxx_xxxxxxxx          ONLINE       0     0     0
+            ata-ST2000DM008-xxxxxx_xxxxxxxx          ONLINE       0     0     0
+            ata-ST2000VX008-xxxxxx_xxxxxxxx          ONLINE       0     0     0
+            ata-HGST_HUcccccccxxxxxx_xxxxxxxx-part1  ONLINE       0     0     0
+
+    errors: No known data errors                                                     <-- GOOD, no data errors
+    ```
+1. `zpool list` - Fragmentation is OK, but nearing the maximum capacity. 
+    - ZFS recommands staying under 80% capacity for max performance.
+    ``` text
+    [root@abrums:~]# zpool list
+    NAME     SIZE  ALLOC   FREE  CKPOINT  EXPANDSZ   FRAG    CAP  DEDUP    HEALTH  ALTROOT
+    abrums  9.06T  8.36T   723G        -         -    16%    92%  1.00x    ONLINE  -
+    ```
+1. `zfs list` - Shows the majority usage (5.95T out of 6.68T) is in `LARGE_ONE`.  The other datasets (top-level folders) only have a few hundred gigs of storage usage.
+    - This includes usage from snapshots.
+    - NOTE: Names obscured.
+    ``` text
+    [root@abrums:~]# zfs list
+    NAME               USED  AVAIL     REFER  MOUNTPOINT
+    abrums            6.68T   449G      166K  legacy
+    abrums/LARGE_ONE  5.95T   449G     5.87T  legacy
+    abrums/STUFF       350G   449G      350G  legacy
+    abrums/SMALLER     195G   449G      195G  legacy
+    abrums/SMALLEST    193G   449G      173G  legacy
+                        ^^               ^^ Refer counts current (not-deleted) files
+                        ^^ Used counts current + deleted files (in snapshots)
+    ```
+1. `zfs list -rt snapshot | awk '{ print $2 " " $1}' | sort -h`
+    - NOTE: Names obscured.
+    ``` text
+    [root@abrums:~]# zfs list -rt snapshot | awk '{ print $2 " " $1}' | sort -h
+    0B abrums/LARGE_ONE@zfs-auto-snap_daily-2021-12-04-1419
+    0B abrums/LARGE_ONE@zfs-auto-snap_daily-2021-12-11-1349
+    0B abrums/LARGE_ONE@zfs-auto-snap_daily-2021-12-12-1407
+    0B abrums/LARGE_ONE@zfs-auto-snap_daily-2021-12-18-1415
+    0B abrums/LARGE_ONE@zfs-auto-snap_daily-2021-12-25-1409
+    0B abrums/LARGE_ONE@zfs-auto-snap_daily-2022-01-01-1341
+    ...
+    ... ~350 lines omitted ...
+    ...
+    10.6M abrums/SMALLEST@zfs-auto-snap_monthly-2021-05-15-1317
+    14.2M abrums/SMALLEST@zfs-auto-snap_monthly-2021-01-19-1349
+    74.7M abrums/LARGE_ONE@zfs-auto-snap_monthly-2021-09-13-1337
+    310M abrums/LARGE_ONE@zfs-auto-snap_monthly-2021-01-19-1349
+    594M abrums/SMALLEST@zfs-auto-snap_monthly-2021-10-13-1324
+    18.2G abrums/LARGE_ONE@zfs-auto-snap_monthly-2021-10-13-1324
+    ```
+    - In this case, if you want to **destroy** a particular snapshot, you can run one command: `zfs` followed by `destroy` followed by the complete name of the snapshot (example: `abrums/LARGE_ONE@zfs-auto-snap_monthly-2021-01-19-1349`)
