@@ -156,15 +156,12 @@ Instead, these steps install Debian and then add OMV on top.
 
 ## ZFS Health Checks
 
-1. Use PuTTY to login to the server as user `root`
-1. Run any of these commands to look at specific ZFS info:
-    - (Lowest-level commands)
-    - `zpool status` shows **drive status**, checksum errors (right-most column).
-    - `zpool list` lists the pool **size usage**, fragmentation, and capacity. 
-    - `zfs list` lists the ZFS-datasets (top-level **folders**) usage.
-    - This command will list all the **snapshots**, sorted by the size used (biggest at the bottom)
-        - `zfs list -rt snapshot | awk '{ print $2 " " $1}' | sort -h`
-    - (Highest-level commands)
+Use PuTTY to login to the server as user `root`, then run any of these commands to look at specific ZFS info:
+1. `zpool status` shows **drive status**, checksum errors (right-most column).
+1. `zpool list` lists the pool **size usage**, fragmentation, and capacity. 
+1. `zfs list` lists the ZFS-datasets (top-level **folders**) usage.
+1. This command will list all the **snapshots**, sorted by the size used (biggest at the bottom)
+    - `zfs list -rt snapshot | awk '{ print $2 " " $1}' | sort -h`
 
 Examples:
 1. `zpool status` - Healthy (error count all 0) and scrub shows no errors (scrub repaired 0B, within past week).
@@ -234,4 +231,5 @@ Examples:
     594M abrums/SMALLEST@zfs-auto-snap_monthly-2021-10-13-1324
     18.2G abrums/LARGE_ONE@zfs-auto-snap_monthly-2021-10-13-1324
     ```
-    - In this case, if you want to **destroy** a particular snapshot, you can run one command: `zfs` followed by `destroy` followed by the complete name of the snapshot (example: `abrums/LARGE_ONE@zfs-auto-snap_monthly-2021-01-19-1349`)
+    - In this case, if you want to **destroy** a particular snapshot, you can run one command:
+        - `zfs destroy abrums/LARGE_ONE@zfs-auto-snap_monthly-2021-01-19-1349`  <-- Example, substitute in the real snapshot name.
