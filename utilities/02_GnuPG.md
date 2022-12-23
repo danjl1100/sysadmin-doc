@@ -1777,9 +1777,15 @@ Import the master key and configuration to a temporary working directory:
 ```console
 $ export GNUPGHOME=$(mktemp -d)
 
-$ gpg --import /mnt/encrypted-storage/tmp.XXX/mastersub.key
-
 $ cp -v /mnt/encrypted-storage/tmp.XXX/gpg.conf $GNUPGHOME
+
+## If required (e.g. NixOS), add line to eng of gpg.conf
+$ echo "pinentry-program /run/current-system/sw/bin/pinentry-curses" >> $GNUPGHOME/gpg-agent.conf
+
+$ gpg --import /mnt/encrypted-storage/tmp.XXX/mastersub.key
+## NOTE: This should prompt you for the primary key passphrase.
+##       If not, can try reloading the gpg-agent (to use pinentry) by this:
+##       $ gpgconf --kill gpg-agent
 ```
 
 Edit the master key:
@@ -1876,10 +1882,24 @@ Key is valid for? (0)
 ```
 Follow these prompts to set a new expiration date, then `quit` to save your changes.
 
-Next, export your public key:
+Unmount and close the encrypted volume:
 
 ```console
-$ gpg --export $KEYID > pubkey.gpg
+$ sudo umount /mnt/encrypted-storage
+
+$ sudo cryptsetup luksClose /dev/mapper/secret
+```
+
+Export the updated public key:
+
+```console
+$ sudo mkdir /mnt/public
+
+$ sudo mount /dev/mmcblk0p2 /mnt/public
+
+$ gpg --armor --export $KEYID | sudo tee /mnt/public/$KEYID-$(date +%F).txt
+
+$ sudo umount /mnt/public
 ```
 
 Transfer that public key to the computer from which you use your GPG key, and then import it with:
