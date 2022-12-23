@@ -275,15 +275,16 @@ Generate a NixOS LiveCD image with the given config:
 
 let
   config = { pkgs, ... }:
-  with pkgs; {
-    imports = [ <nixpkgs/nixos/modules/installer/cd-dvd/installation-cd-graphical-kde.nix> ];
+  {
+    imports = [ <nixpkgs/nixos/modules/installer/cd-dvd/installation-cd-graphical-gnome.nix> ];
 
+    # NOTE: may need to disable this line, in case of broken package issues
     boot.kernelPackages = linuxPackages_latest;
 
     services.pcscd.enable = true;
-    services.udev.packages = [ yubikey-personalization ];
+    services.udev.packages = with pkgs; [ yubikey-personalization ];
 
-    environment.systemPackages = [ gnupg pinentry-curses pinentry-qt paperkey wget ];
+    environment.systemPackages = with pkgs; [ gnupg pinentry-curses pinentry-qt paperkey wget ];
 
     programs = {
       ssh.startAgent = false;
@@ -311,6 +312,16 @@ $ nix build -f yubikey-installer.nix --out-link installer
 $ sudo cp -v installer/iso/*.iso /dev/sdb; sync
 'installer/iso/nixos-20.03.git.c438ce1-x86_64-linux.iso' -> '/dev/sdb'
 ```
+
+Optionally, you can verify the copy was successful (re-read from USB).
+```console
+$ sudo blockdev --flushbufs /dev/sdb
+
+## Remove and reinsert the USB flash drive, to ensure kernel re-reads from disk
+
+$ sudo cmp -n `stat -c '%s' installer/iso/*.iso` installer/iso/*.iso /dev/sdb
+```
+(source [stackexchange.com](https://unix.stackexchange.com/a/75513))
 
 On NixOS, ensure that you have `pinentry-program /run/current-system/sw/bin/pinentry-curses` in your `$GNUPGHOME/gpg-agent.conf` before running any `gpg` commands.
 
