@@ -5,4 +5,4 @@ if [ ! -f "${PRIVACY}" ]; then
 fi
 
 # negate the output (no results = 0, results = 1)
-! grep -r --exclude-dir=".git" --exclude="privacy.txt" -f "${PRIVACY}" .
+! grep --color -r --exclude-dir=".git" --exclude="privacy.txt" -f "${PRIVACY}" .
