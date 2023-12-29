@@ -271,20 +271,33 @@ Generate a NixOS LiveCD image with the given config:
 
 ```nix
 # yubikey-installer.nix
-{ nixpkgs ? <nixpkgs>, system ? "x86_64-linux" } :
-
-let
-  config = { pkgs, ... }:
-  {
-    imports = [ <nixpkgs/nixos/modules/installer/cd-dvd/installation-cd-graphical-gnome.nix> ];
+{
+  nixpkgs ? <nixpkgs>,
+  system ? "x86_64-linux",
+}: let
+  config = {pkgs, ...}: {
+    imports = [<nixpkgs/nixos/modules/installer/cd-dvd/installation-cd-graphical-gnome.nix>];
 
     # NOTE: may need to disable this line, in case of broken package issues
-    boot.kernelPackages = linuxPackages_latest;
+    boot.kernelPackages = pkgs.linuxPackages_latest;
 
     services.pcscd.enable = true;
-    services.udev.packages = with pkgs; [ yubikey-personalization ];
+    services.udev.packages = with pkgs; [yubikey-personalization];
 
-    environment.systemPackages = with pkgs; [ gnupg pinentry-curses pinentry-qt paperkey wget ];
+    # Aggressively disable data leaks
+    hardware.pulseaudio.enable = pkgs.lib.mkForce false;
+    boot.kernelParams = let
+      blacklisted_modules = [
+        # TODO - determine packages by blacklisting modules found in `lsmod`
+        "nfnetlink"
+        "rtw88_pci"
+        "bluetooth"
+      ];
+    in [
+      "module_blacklist=${pkgs.lib.concatStringsSep "," blacklisted_modules}"
+    ];
+
+    environment.systemPackages = with pkgs; [gnupg pinentry-curses pinentry-qt paperkey wget];
 
     programs = {
       ssh.startAgent = false;
@@ -295,10 +308,10 @@ let
     };
   };
 
-  evalNixos = configuration: import <nixpkgs/nixos> {
-    inherit system configuration;
-  };
-
+  evalNixos = configuration:
+    import <nixpkgs/nixos> {
+      inherit system configuration;
+    };
 in {
   iso = (evalNixos config).config.system.build.isoImage;
 }
