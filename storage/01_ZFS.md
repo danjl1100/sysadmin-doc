@@ -78,7 +78,7 @@ __NOTE__: Additional vdevs added to the pool can have their own `ashift` value.
 
 1. Repeat for all data drives.
 
-1. Create the pool using the `ashift` value found in previous subsection.  
+1. Create the pool using the `ashift` value found in previous subsection.
 __NOTE:__ For simplicity, use pool name "`${HOSTNAME}`".
     ```bash
     sudo zpool create ${HOSTNAME} -o ashift=12 \
@@ -229,12 +229,12 @@ Use [zfs-auto-mirror](https://github.com/nadavgolden/zfs-auto-mirror) shell scri
     sudo passwd zfs-sender #create TEMPORARY password
     sudo zfs allow zfs-sender mount,snapshot,send,hold DATASET_PATHS
     ln -s /sbin/zfs /usr/bin/zfs
-    
+
     # on destination host
     sudo useradd zfs-receiver -m -s /bin/bash
     sudo zfs allow zfs-receiver mount,create,receive DATASET_PATHS
     ln -s /sbin/zfs /usr/bin/zfs
-    
+
     sudo -u zfs-receiver /bin/bash
     $ ssh-keygen -t rsa #create with no passphrase, in ~/.ssh/SOURCE_HOST.rsa
     $ echo "Host SOURCE_HOST
@@ -243,7 +243,7 @@ Use [zfs-auto-mirror](https://github.com/nadavgolden/zfs-auto-mirror) shell scri
     	User zfs-sender" >> ~/.ssh/config
     $ ssh-copy-id -i ~/.ssh/SOURCE_HOST.rsa.pub SOURCE_HOST
     $ exit
-    
+
     # on source host
     sudo passwd -l zfs-sender
     ```
@@ -268,6 +268,88 @@ Use [zfs-auto-mirror](https://github.com/nadavgolden/zfs-auto-mirror) shell scri
     ```
 
 Source: [superuser.com](https://superuser.com/a/1483245)
+
+### Expand a mirror by cloning to new drives (defrag)
+
+Apparently ZFS does not have a built-in method to defragment the free space on the drives.  This should only matter for HDDs, where new files are forced to span a larger "seek distance" on the drive.
+
+These steps assume expanding a from 8TB to 20TB, where the original 8TB drives will no longer be used. Adjust accordingly.
+
+1. Ensure the source pool is not being written to (e.g. not mounted, no services querying ZFS)
+    ```bash
+    zfs set mountpoint=none mypool
+    ```
+1. Create the new pool:
+    - destroy the existing partition tables:
+        ```bash
+        export NEW1=/dev/disk/by-id/drive-identifier1
+        export NEW2=/dev/disk/by-id/drive-identifier2
+        sudo fdisk -l $NEW1
+        sudo fdisk -l $NEW2
+        sudo fdisk $NEW1
+        > g # create new GPT partition table
+        > w # write changes to disk
+        sudo fdisk $NEW2
+        > g
+        > w
+        ```
+	- create the new pool
+        ```bash
+        sudo zpool create -m none mypool-20 mirror $NEW1 $NEW2
+        ```
+	- setup the new pool to match the old one
+        ```bash
+        diff <(sudo zfs get all mypool | cut -d ' ' -f 2-) <(sudo zfs get all mypool-20 | cut -d ' ' -f 2-) -y | less
+        sudo zfs set compression=lz4 mypool-20
+        sudo zfs set atime=off mypool-20
+        ```
+	- clone the old pool to the new pool, using an appropriate SNAPSHOT name (e.g. transfer_YYYYMMDDTHHMM for the current time)
+		```bash
+		export SNAPSHOT="mypool@transfer_YYYYMMDDTHHMM"
+		sudo zfs snapshot -r "$SNAPSHOT"
+		# dry-run the send
+		sudo zfs send -R "$SNAPSHOT" --dryrun --verbose
+		# dry-run the receive
+		sudo zfs send -R "$SNAPSHOT" | mbuffer -s 128k -m 1G | sudo zfs recv -Fdus mypool-20 -nv
+		# execute for real
+		sudo zfs send -R "$SNAPSHOT" | mbuffer -s 128k -m 1G | sudo zfs recv -Fdus mypool-20
+		```
+		- ZFS Send flags
+			- -R recursive (send all child datasets/properties as well)
+		- mbuffer flags
+			- -s use blocks of this size (bytes) for the buffer
+			- -m  total size (bytes) of the buffer
+		- ZFS Receive flags
+			- -F force a rollback of the receiving filesystem to the most recent snapshot
+			- -d discard the first element from the received dataset name
+			- -u do not mount the received datasets
+			- -s if the stream is interrupted, print a "resume" token that can be used to resume the send
+		```bash
+		sudo zfs send -R "$SNAPSHOT" | mbuffer -s 128k -m 1G | sudo zfs recv -Fdus mypool-20    
+
+		in @ 10.2 MiB/s, out @ 10.2 MiB/s, 2101 GiB total, buffer 100% fullin @ 100.0 MiB/s, out @ 100.0 MiB/s, 2678 GiB toin @  0.0 kiB/s, out @  0.0 kiB/s, 6178 GiB total, buffer   0% fulll, buffer   0% full
+
+		summary: 6178 GiByte in 11h 11min 29.2sec - average of  157 MiB/s
+		```
+	- Rename the old pool
+		```bash
+		# rename the old pool to mypool-8
+		sudo zpool export mypool
+		sudo zpool import -d /dev/disk/by-id/ mypool mypool-8
+		```
+	- Rename the new pool into place
+		```bash
+		# rename the new pool from mypool-20 to mypool-8
+		sudo zpool export mypool-20
+		sudo zpool import -d /dev/disk/by-id/ mypool-20 mypool
+		```
+    - Verify the pool sizes look correct
+        ```bash
+        zpool list
+        ```
+1. Shutdown to physically disconnect the old `mypool-8` drives
+1. Re-enable all known access to the zpool
+
 
 
 ## Next Steps
